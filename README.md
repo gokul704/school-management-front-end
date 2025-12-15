@@ -1,36 +1,153 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# School Management System - Frontend
+
+A comprehensive school management system built with Next.js 16, React 19, TypeScript, and Tailwind CSS.
+
+## Features
+
+### Core Management
+- **Student Information Management**: Complete student profiles with personal info, academic records, attendance, and health data
+- **Teacher Management**: Teacher profiles, schedules, attendance tracking, and performance monitoring
+- **Course Management**: Academic course creation, assignment to teachers, and curriculum tracking
+- **Attendance Management**: Digital attendance marking with automated reports and parent notifications
+
+### Admissions & Enrollment
+- **Online Admissions**: Digital application forms with document uploads
+- **Application Tracking**: Status tracking from pending to enrolled
+- **Automated Follow-ups**: Reminder system for incomplete applications
+- **Document Management**: Secure storage and verification of admission documents
+
+### Financial Management
+- **Fee Management**: Comprehensive fee structure with multiple fee types
+- **Payment Tracking**: Real-time payment status and history
+- **Online Payments**: Integration ready for payment gateways
+- **Financial Reports**: Detailed analytics and reporting
+
+### Academic Features
+- **Gradebook**: Online grading system with customizable report cards
+- **Assignment Management**: Homework creation, submission tracking, and grading
+- **Exam Management**: Exam scheduling, result generation, and performance analytics
+- **Timetable Management**: Automated class scheduling with calendar integration
+
+### Communication & Notifications
+- **Built-in Communication**: Messaging between staff, students, and parents
+- **Push Notifications**: Real-time alerts for important events
+- **Announcements**: School-wide announcements and circulars
+- **Event Management**: Calendar integration for school events and activities
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4
+- **UI Components**: shadcn/ui
+- **State Management**: Redux Toolkit
+- **Form Handling**: React Hook Form + Zod
+- **HTTP Client**: Axios
+- **Icons**: Lucide React
+- **Date Handling**: date-fns
+- **Charts**: Recharts
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd school-management-front-end
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Create a `.env.local` file in the root directory:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
+NEXT_PUBLIC_APP_NAME=School Management System
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Run the development server:
+```bash
+npm run dev
+```
 
-## Learn More
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+app/
+├── (auth)/              # Authentication routes
+│   ├── login/
+│   └── register/
+├── (dashboard)/         # Protected dashboard routes
+│   ├── students/
+│   ├── teachers/
+│   ├── courses/
+│   ├── attendance/
+│   ├── admissions/
+│   ├── financial/
+│   ├── academics/
+│   ├── communications/
+│   └── settings/
+├── components/          # Reusable components
+│   ├── ui/             # shadcn/ui components
+│   ├── layout/         # Layout components
+│   ├── auth/           # Auth components
+│   └── providers/      # Context providers
+├── lib/                 # Utilities and helpers
+│   ├── api/            # API client and endpoints
+│   ├── store/          # Redux store configuration
+│   └── utils/          # Helper functions
+└── types/              # TypeScript type definitions
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## API Integration
 
-## Deploy on Vercel
+The frontend expects a Node.js backend API running on `http://localhost:3001/api` (configurable via environment variables).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### API Endpoints Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `/auth/*` - Authentication endpoints
+- `/students/*` - Student management
+- `/teachers/*` - Teacher management
+- `/courses/*` - Course management
+- `/attendance/*` - Attendance tracking
+- `/admissions/*` - Admission applications
+- `/financial/*` - Financial management
+- `/academics/*` - Academic features
+- `/communications/*` - Communication features
+- `/notifications/*` - Notification management
+
+## Authentication
+
+The application uses JWT-based authentication with token refresh mechanism. Tokens are stored in localStorage.
+
+## Building for Production
+
+```bash
+npm run build
+npm start
+```
+
+## Environment Variables
+
+- `NEXT_PUBLIC_API_URL`: Backend API base URL (default: `http://localhost:3001/api`)
+- `NEXT_PUBLIC_APP_NAME`: Application name
+
+## Contributing
+
+1. Create a feature branch
+2. Make your changes
+3. Submit a pull request
+
+## License
+
+MIT
