@@ -220,9 +220,6 @@ export default function EditCoursePage() {
 
                 <FormField
                   control={form.control}
-
-                <FormField
-                  control={form.control}
                   name="teacherId"
                   render={({ field }) => (
                     <FormItem>
