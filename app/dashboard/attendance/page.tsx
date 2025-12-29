@@ -123,7 +123,7 @@ export default function AttendancePage() {
       // Get unique sections from students in this class
       try {
         const studentsRes = await attendanceApi.getStudentsForAttendance({ classId: selectedClassId });
-        const uniqueSections = [...new Set(studentsRes.map(s => s.section).filter(Boolean))].sort();
+        const uniqueSections = [...new Set(studentsRes.map((s: { section: string }) => s.section).filter(Boolean))].sort();
         setSections(uniqueSections);
       } catch (error) {
         console.error('Failed to load sections:', error);
