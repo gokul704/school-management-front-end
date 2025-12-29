@@ -3,7 +3,11 @@ import { AdmissionApplication, PaginatedResponse } from '@/types';
 
 export const admissionApi = {
   getAll: async (params?: { page?: number; limit?: number; status?: string }) => {
-    const response = await apiClient.get<PaginatedResponse<AdmissionApplication>>('/admissions', { params });
+    const response = await apiClient.get<{ success: boolean; data: AdmissionApplication[]; pagination?: any }>('/admissions', { params });
+    // Handle both response formats
+    if (response.data.success) {
+      return { data: response.data.data, pagination: response.data.pagination };
+    }
     return response.data;
   },
 
@@ -13,8 +17,12 @@ export const admissionApi = {
   },
 
   create: async (data: Partial<AdmissionApplication>) => {
-    const response = await apiClient.post<{ data: AdmissionApplication }>('/admissions', data);
-    return response.data.data;
+    const response = await apiClient.post<{ success: boolean; data: AdmissionApplication }>('/admissions', data);
+    // Handle both response formats
+    if (response.data.success) {
+      return response.data.data;
+    }
+    return (response.data as any).data || response.data;
   },
 
   update: async (id: string, data: Partial<AdmissionApplication>) => {
@@ -23,11 +31,15 @@ export const admissionApi = {
   },
 
   updateStatus: async (id: string, status: string, notes?: string) => {
-    const response = await apiClient.patch<{ data: AdmissionApplication }>(`/admissions/${id}/status`, {
+    const response = await apiClient.patch<{ success: boolean; data: AdmissionApplication }>(`/admissions/${id}/status`, {
       status,
       notes,
     });
-    return response.data.data;
+    // Handle both response formats
+    if (response.data.success) {
+      return response.data.data;
+    }
+    return (response.data as any).data || response.data;
   },
 
   uploadDocument: async (id: string, file: File, type: string) => {

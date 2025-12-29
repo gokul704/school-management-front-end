@@ -4,6 +4,7 @@ import {
   Assignment,
   Exam,
   Timetable,
+  TimetableSlot,
   PaginatedResponse,
 } from '@/types';
 
@@ -18,13 +19,21 @@ export const academicsApi = {
 
   // Assignments
   getAssignments: async (params?: { page?: number; limit?: number; courseId?: string }) => {
-    const response = await apiClient.get<PaginatedResponse<Assignment>>('/academics/assignments', { params });
+    const response = await apiClient.get<{ success: boolean; data: Assignment[]; pagination?: any }>('/academics/assignments', { params });
+    // Handle both response formats
+    if (response.data.success) {
+      return { data: response.data.data, pagination: response.data.pagination };
+    }
     return response.data;
   },
 
   createAssignment: async (data: Partial<Assignment>) => {
-    const response = await apiClient.post<{ data: Assignment }>('/academics/assignments', data);
-    return response.data.data;
+    const response = await apiClient.post<{ success: boolean; data: Assignment }>('/academics/assignments', data);
+    // Handle both response formats
+    if (response.data.success) {
+      return response.data.data;
+    }
+    return (response.data as any).data || response.data;
   },
 
   updateAssignment: async (id: string, data: Partial<Assignment>) => {
@@ -51,13 +60,21 @@ export const academicsApi = {
 
   // Exams
   getExams: async (params?: { page?: number; limit?: number; courseId?: string }) => {
-    const response = await apiClient.get<PaginatedResponse<Exam>>('/academics/exams', { params });
+    const response = await apiClient.get<{ success: boolean; data: Exam[]; pagination?: any }>('/academics/exams', { params });
+    // Handle both response formats
+    if (response.data.success) {
+      return { data: response.data.data, pagination: response.data.pagination };
+    }
     return response.data;
   },
 
   createExam: async (data: Partial<Exam>) => {
-    const response = await apiClient.post<{ data: Exam }>('/academics/exams', data);
-    return response.data.data;
+    const response = await apiClient.post<{ success: boolean; data: Exam }>('/academics/exams', data);
+    // Handle both response formats
+    if (response.data.success) {
+      return response.data.data;
+    }
+    return (response.data as any).data || response.data;
   },
 
   updateExam: async (id: string, data: Partial<Exam>) => {
@@ -72,20 +89,71 @@ export const academicsApi = {
 
   // Timetable
   getTimetable: async (classId?: string, academicYear?: string) => {
-    const response = await apiClient.get<{ data: Timetable }>('/academics/timetable', {
-      params: { classId, academicYear },
-    });
-    return response.data.data;
+    try {
+      const response = await apiClient.get<{ success: boolean; data: Timetable }>('/academics/timetable', {
+        params: { classId, academicYear },
+      });
+      // Handle both response formats
+      if (response.data.success) {
+        const timetable = response.data.data;
+        // Ensure schedule is an array (it might be a JSON string from the database)
+        if (timetable.schedule && typeof timetable.schedule === 'string') {
+          timetable.schedule = JSON.parse(timetable.schedule);
+        }
+        return timetable;
+      }
+      const timetable = (response.data as any).data || response.data;
+      // Ensure schedule is an array
+      if (timetable && timetable.schedule && typeof timetable.schedule === 'string') {
+        timetable.schedule = JSON.parse(timetable.schedule);
+      }
+      return timetable;
+    } catch (error: any) {
+      // If 404, return null instead of throwing
+      if (error.response?.status === 404) {
+        return null;
+      }
+      throw error;
+    }
   },
 
   createTimetable: async (data: Partial<Timetable>) => {
-    const response = await apiClient.post<{ data: Timetable }>('/academics/timetable', data);
-    return response.data.data;
+    const response = await apiClient.post<{ success: boolean; data: Timetable }>('/academics/timetable', data);
+    // Handle both response formats
+    if (response.data.success) {
+      return response.data.data;
+    }
+    return (response.data as any).data || response.data;
   },
 
   updateTimetable: async (id: string, data: Partial<Timetable>) => {
     const response = await apiClient.put<{ data: Timetable }>(`/academics/timetable/${id}`, data);
     return response.data.data;
+  },
+
+  generateTimetable: async (data: {
+    classId: string;
+    academicYear: string;
+    sections?: string[];
+    slotDuration?: number;
+    workingHours?: { start: string; end: string };
+  }) => {
+    const response = await apiClient.post<{
+      success: boolean;
+      data: {
+        schedule: TimetableSlot[];
+        summary: {
+          totalSlots: number;
+          courses: number;
+          sections: number;
+          duration: number;
+        };
+      };
+    }>('/academics/timetable/generate', data);
+    if (response.data.success) {
+      return response.data.data;
+    }
+    return (response.data as any).data || response.data;
   },
 };
 

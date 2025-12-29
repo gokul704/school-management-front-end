@@ -47,9 +47,13 @@ class ApiClient {
             if (refreshToken && originalRequest.headers) {
               const response = await axios.post(`${API_URL}/auth/refresh`, {
                 refreshToken,
+              }, {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
               });
 
-              const { token } = response.data.data;
+              const token = response.data.success ? response.data.data.token : response.data.data.token;
               this.setToken(token);
               
               originalRequest.headers.Authorization = `Bearer ${token}`;

@@ -37,6 +37,7 @@ export interface Student {
   enrollmentDate: string;
   classId?: string;
   className?: string;
+  section?: string;
   status: 'active' | 'inactive' | 'graduated' | 'transferred';
   healthData?: HealthData;
   createdAt: string;
@@ -56,8 +57,8 @@ export interface AcademicRecord {
   studentId: string;
   courseId: string;
   courseName: string;
+  courseCode?: string;
   grade: string;
-  semester: string;
   academicYear: string;
   credits: number;
   createdAt: string;
@@ -92,6 +93,9 @@ export interface Schedule {
   startTime: string;
   endTime: string;
   room?: string;
+  className?: string;
+  academicYear?: string;
+  section?: string;
 }
 
 // Course Types
@@ -105,7 +109,6 @@ export interface Course {
   teacherName?: string;
   department: string;
   academicYear: string;
-  semester: string;
   maxStudents?: number;
   enrolledStudents?: number;
   status: 'active' | 'inactive';
@@ -235,7 +238,6 @@ export interface Gradebook {
   finalGrade?: string;
   gpa?: number;
   academicYear: string;
-  semester: string;
 }
 
 export interface Assignment {
@@ -313,7 +315,6 @@ export interface Timetable {
   classId: string;
   className: string;
   academicYear: string;
-  semester: string;
   schedule: TimetableSlot[];
   createdAt: string;
   updatedAt: string;
@@ -329,6 +330,8 @@ export interface TimetableSlot {
   teacherId: string;
   teacherName: string;
   room?: string;
+  durationMinutes?: number;
+  section?: string;
 }
 
 // Communication Types
@@ -398,6 +401,86 @@ export interface PaginatedResponse<T> {
     limit: number;
     total: number;
     totalPages: number;
+  };
+}
+
+// Holiday Types
+export interface Holiday {
+  id: string;
+  title: string;
+  description?: string;
+  startDate: string;
+  endDate: string;
+  holidayType: 'holiday' | 'festival' | 'exam' | 'break' | 'other';
+  isRecurring: boolean;
+  recurringPattern?: string;
+  createdBy?: string;
+  createdByName?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Grade Types
+export interface Grade {
+  id: string;
+  studentId: string;
+  courseId: string;
+  courseName: string;
+  courseCode: string;
+  classId: string;
+  className: string;
+  gradeLevel?: string;
+  academicYear: string;
+  grade: string;
+  marksObtained?: number;
+  maxMarks?: number;
+  examType: 'unit_test' | 'mid_term' | 'final' | 'assignment' | 'project' | 'practical' | 'other';
+  examName?: string;
+  remarks?: string;
+  createdBy?: string;
+  createdByName?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProgressCard {
+  student: {
+    id: string;
+    studentId: string;
+    firstName: string;
+    lastName: string;
+    name: string;
+  };
+  class: {
+    id: string;
+    name: string;
+    gradeLevel?: string;
+  };
+  academicYear: string;
+  subjects: Array<{
+    courseId: string;
+    courseCode: string;
+    courseName: string;
+    finalGrade: string | null;
+    finalMarks: number | null;
+    totalMarks: number | null;
+    averagePercentage: number | null;
+    grades: Array<{
+      id: string;
+      examType: string;
+      examName?: string;
+      grade: string;
+      marksObtained: number | null;
+      maxMarks: number | null;
+      remarks?: string;
+      createdAt: string;
+    }>;
+  }>;
+  overall: {
+    grade: string | null;
+    percentage: number | null;
+    totalSubjects: number;
+    subjectsWithGrades: number;
   };
 }
 

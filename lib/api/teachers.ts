@@ -3,7 +3,11 @@ import { Teacher, PaginatedResponse, Schedule } from '@/types';
 
 export const teacherApi = {
   getAll: async (params?: { page?: number; limit?: number; search?: string }) => {
-    const response = await apiClient.get<PaginatedResponse<Teacher>>('/teachers', { params });
+    const response = await apiClient.get<{ success: boolean; data: Teacher[]; pagination?: any }>('/teachers', { params });
+    // Handle both response formats
+    if (response.data.success) {
+      return { data: response.data.data, pagination: response.data.pagination };
+    }
     return response.data;
   },
 
@@ -27,8 +31,12 @@ export const teacherApi = {
   },
 
   getSchedule: async (teacherId: string) => {
-    const response = await apiClient.get<{ data: Schedule[] }>(`/teachers/${teacherId}/schedule`);
-    return response.data.data;
+    const response = await apiClient.get<{ success: boolean; data: Schedule[] }>(`/teachers/${teacherId}/schedule`);
+    // Handle both response formats
+    if (response.data.success) {
+      return response.data.data;
+    }
+    return response.data.data || [];
   },
 };
 

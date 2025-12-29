@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { User, LoginCredentials, AuthResponse } from '@/types';
 import { apiClient } from '@/lib/api/client';
-import axios from 'axios';
+import { authApi } from '@/lib/api/auth';
 
 interface AuthState {
   user: User | null;
@@ -26,8 +26,7 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, credentials);
-      const data: AuthResponse = response.data.data;
+      const data: AuthResponse = await authApi.login(credentials);
       
       // Store tokens
       if (typeof window !== 'undefined') {
