@@ -200,7 +200,10 @@ export default function CommunicationsPage() {
           // Get unique sections from students in this class
           try {
             const studentsRes = await communicationsApi.getStudentsForMessaging({ classId: selectedClassId });
-            const uniqueSections = [...new Set(studentsRes.map(s => s.section).filter(Boolean))].sort();
+            const sections: string[] = (studentsRes as Array<{ section: string }>)
+              .map((s) => s.section || '')
+              .filter((s: string) => s.length > 0);
+            const uniqueSections: string[] = [...new Set(sections)].sort();
             setSections(uniqueSections);
           } catch (error) {
             console.error('Failed to load sections:', error);
